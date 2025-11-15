@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Set User Password</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #1a0033; color: #fff; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+    h1 { color:#ff00ff; margin-bottom:20px; }
+    input { padding:10px; font-size:16px; border-radius:6px; border:none; margin-bottom:10px; }
+    button { padding:10px 20px; font-size:16px; border-radius:6px; border:none; background:#ff00ff; color:#000; cursor:pointer; transition:0.3s; }
+    button:hover { background:#cc00cc; }
+    .toast { position: fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#000; color:#fff; padding:10px 20px; border-radius:6px; display:none; }
+</style>
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+<input type="password" id="newPassword" placeholder="Enter new user password">
+<button id="setPasswordBtn">Set Password</button>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCxUtOPf13Pb_mP4dRTJmYTLxGTWk9Yjd4",
+    authDomain: "app-e4d5f.firebaseapp.com",
+    databaseURL: "https://app-e4d5f-default-rtdb.firebaseio.com",
+    projectId: "app-e4d5f",
+    storageBucket: "app-e4d5f.firebasestorage.app",
+    messagingSenderId: "531741176721",
+    appId: "1:531741176721:web:35d58df8bc78bd94b92030",
+    measurementId: "G-89P68RCFVR"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const toast = document.getElementById('toast');
+
+function showToast(msg){
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(()=>{ toast.style.display = 'none'; }, 2500);
+}
+
+document.getElementById('setPasswordBtn').addEventListener('click', ()=>{
+    const newPass = document.getElementById('newPassword').value.trim();
+    if(newPass.length < 4){
+        showToast('Password too short!');
+        return;
+    }
+    db.ref('userPassword').set({ password: newPass })
+    .then(()=> showToast('Password updated successfully!'))
+    .catch(err=> showToast('Error: '+err.message));
+});
+</script>
+</body>
+</html>
